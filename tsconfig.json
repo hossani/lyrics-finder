@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",  // Utiliser CommonJS pour Node.js
+    "target": "ES2016",  // Cibler ES2016 pour la sortie JavaScript
+    "sourceMap": true,  // Générer les fichiers source maps pour le débogage
+    "outDir": "./dist",  // Spécifier le répertoire de sortie pour les fichiers compilés
+    "rootDir": "./src",  // Spécifier le répertoire racine des fichiers source
+    "strict": true,  // Activer toutes les vérifications strictes de TypeScript
+    "esModuleInterop": true,  // Activer l'interopérabilité des modules ES pour les imports
+    "skipLibCheck": true  // Ignorer la vérification des types dans les fichiers de bibliothèque
+  },
+  "include": ["src/**/*"],  // Inclure tous les fichiers dans le répertoire src
+  "exclude": ["node_modules"]  // Exclure le répertoire node_modules
+}
