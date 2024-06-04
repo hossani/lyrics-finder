@@ -5,6 +5,7 @@ const app:Application=express();
 
 app.use(express.json());
 
+//Example de test 
 app.get('/root',(req:Request,res:Response)=>{
 
     console.log('Reponse de server!!!');
