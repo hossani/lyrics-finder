@@ -66,3 +66,17 @@ export const deleteSong = async (req: Request, res: Response) => {
         res.status(500).json({ message: error })
     }
 }
+
+//display all songs 
+
+export const getAllSongs = async (req: Request, res: Response) => {
+    try {
+        const songs = await Song.find();
+        if(!songs){
+            return res.status(404).json({ message: "No songs found!!"});
+        }
+        res.status(200).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: error});
+    }
+}
