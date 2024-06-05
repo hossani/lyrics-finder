@@ -3,11 +3,15 @@ import { Request, Response } from 'express';
 import User from '../models/userModels';
 import {NotFoundError} from '../errors/index'
 
+interface AuthenticatedRequest extends Request {
+  user: any; 
+}
+
 // S'abonner à la newsletter
-const subscribeNewsletter = async (req: Request, res: Response) => {
+const subscribeNewsletter = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    // const {userId}=req.user;
-    const {userId}=req.body;
+    const {userId}=req.user;
+
     const user = await User.findById(userId);
     if (!user)  throw new NotFoundError('User not found');
     if(user.newsletter){
@@ -23,10 +27,9 @@ const subscribeNewsletter = async (req: Request, res: Response) => {
 };
 
 // Se désabonner de la newsletter
-const unsubscribeNewsletter = async (req: Request, res: Response) => {
+const unsubscribeNewsletter = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    // const {userId}=req.user;
-    const {userId}=req.body;
+    const {userId}=req.user;
     const user = await User.findById(userId);
     if (!user)  throw new NotFoundError('User not found');
     if(!user.newsletter){
