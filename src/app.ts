@@ -47,7 +47,6 @@ app.post('/api/users', async (req: Request, res: Response) => {
   // Route POST pour créer une nouvelle chanson
 app.post('/songs', async (req: Request, res: Response) => {
     const { genre, title, recorded_date, lyrics, artist } = req.body;
-  
     const newSong = await Song.create({
       genre,
       title,
