@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Artist from '../models/artistModel';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv'
+import { BadRequestError, NotFoundError } from "../errors";
+
 dotenv.config()
 
 
@@ -41,7 +43,7 @@ export const addArtist = async (req: Request, res: Response) =>{
     
     } catch (error) {
         console.log(error)
-        res.status(500).json({ message: error});
+        throw new BadRequestError("Failed to create artist");
     }
 }
 
@@ -55,7 +57,7 @@ export const updateArtist = async (req: Request, res: Response) => {
         const updatedArtist = await Artist.findById(id);
 
         if (!updatedArtist) {
-            return res.status(404).json({ message: 'Artist not found' });
+            throw new NotFoundError('Artist not found');
         }
 
         let picture_url = '';
@@ -77,7 +79,7 @@ export const updateArtist = async (req: Request, res: Response) => {
         await updatedArtist.save();
         res.status(200).json(updatedArtist);
     } catch (error) {
-        res.status(500).json({ message: error });
+        throw new BadRequestError("Failed to update artist");
     }
 }
 
@@ -88,11 +90,11 @@ export const deleteArtist = async (req: Request, res: Response) => {
     try {
         const deletedArtist = await Artist.findByIdAndDelete(id);
         if (!deletedArtist) {
-            return res.status(404).json({ message: 'Artist not found' });
+            throw new NotFoundError('Artist not found');
         }
         res.status(200).json({ message: 'Artist deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error });  
+        throw new BadRequestError("Failed to delete artist");  
     }
 }
 
@@ -102,10 +104,10 @@ export const getAllArtists = async (req: Request, res: Response) => {
     try {
         const artists = await Artist.find();
         if(!artists){
-            return res.status(404).json({ message: "No artist found!!"});
+            throw new NotFoundError("No artists found");
         }
         res.status(200).json(artists);
     } catch (error) {
-        res.status(500).json({ message: error });
+        throw new BadRequestError("Failed to fetch artists");
     }
 }
