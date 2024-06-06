@@ -55,6 +55,7 @@ export const makeAdmin = async (req: Request, res: Response) => {
     console.log(`User: ${userTomakeAdmin}\nisAdmin: ${isAdmin}`);
 
     if(!userTomakeAdmin) {
+      res.status(404).json("user not found");
       throw new NotFoundError('User not found');
     }
 
