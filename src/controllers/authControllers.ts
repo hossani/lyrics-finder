@@ -6,7 +6,8 @@ import BadRequestError from "../errors/bad-request";
 import NotFound from "../errors/not-found";
 import { body } from "express-validator";
 import User from "../models/userModels";
-import connectDB from "../config/database";
+import connectDB from "../models/db";
+import { isAdmin } from "../middlewares/checkAdmin";
 
 interface RegisterUserBody {
   firstname: string;
@@ -25,6 +26,10 @@ interface AuthenticatedRequest extends Request {
 
 const AuthController = {
   registerUser: async (req: Request, res: Response): Promise<void> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+       res.status(400).json({ errors: errors.array() });
+    }
     const { firstname, lastname, email, password } =
       req.body as RegisterUserBody;
 
@@ -77,6 +82,7 @@ const AuthController = {
       const usertoken = {
         id: user.id,
         email: user.email,
+        isAdmin:user.isAdmin,
       };
       const token = generateToken(usertoken);
       console.log("token", token);
@@ -136,4 +142,23 @@ const AuthController = {
     }
   },
 };
+
+export const registerUserValidation = [
+  check('firstname').notEmpty().withMessage('Firstname is required'),
+  check('lastname').notEmpty().withMessage('Lastname is required'),
+  check('email').isEmail().withMessage('Please provide a valid email'),
+  check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+];
+
+export const loginUserValidation = [
+  check('email').isEmail().withMessage('Please provide a valid email'),
+  check('password').notEmpty().withMessage('Password is required')
+];
+
+export const updateUserValidation = [
+  check('oldPassword').notEmpty().withMessage('Old password is required'),
+  check('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long')
+];
+
+
 export default AuthController;
