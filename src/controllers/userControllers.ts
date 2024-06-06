@@ -8,10 +8,9 @@ interface AuthenticatedRequest extends Request {
 }
 
 // S'abonner à la newsletter
-const subscribeNewsletter = async (req: AuthenticatedRequest, res: Response) => {
+const subscribeNewsletter:any = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const {userId}=req.user;
-
+    const userId=req.user.id;
     const user = await User.findById(userId);
     if (!user)  throw new NotFoundError('User not found');
     if(user.newsletter){
@@ -27,9 +26,9 @@ const subscribeNewsletter = async (req: AuthenticatedRequest, res: Response) => 
 };
 
 // Se désabonner de la newsletter
-const unsubscribeNewsletter = async (req: AuthenticatedRequest, res: Response) => {
+const unsubscribeNewsletter:any = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const {userId}=req.user;
+    const userId=req.user.id;
     const user = await User.findById(userId);
     if (!user)  throw new NotFoundError('User not found');
     if(!user.newsletter){
