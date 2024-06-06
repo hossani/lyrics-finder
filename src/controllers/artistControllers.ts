@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Artist from '../models/artistModel';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv'
+import { BadRequestError, NotFoundError } from "../errors";
 dotenv.config()
 
 
@@ -41,7 +42,7 @@ export const addArtist = async (req: Request, res: Response) =>{
     
     } catch (error) {
         console.log(error)
-        res.status(500).json({ message: error});
+        throw new BadRequestError("Failed to create artist");
     }
 }
 
@@ -54,8 +55,10 @@ export const updateArtist = async (req: Request, res: Response) => {
     try {
         const updatedArtist = await Artist.findById(id);
 
+        console.log(`firstname: ${firstname}\nlastname: ${lastname}\ngenre: ${genre}\nborn city: ${born_city}\n died date: ${died_date}`)
+
         if (!updatedArtist) {
-            return res.status(404).json({ message: 'Artist not found' });
+            throw new NotFoundError('Artist not found');
         }
 
         let picture_url = '';
@@ -65,21 +68,36 @@ export const updateArtist = async (req: Request, res: Response) => {
             picture_url = result.secure_url;
         }
 
-        updatedArtist.firstname = firstname;
-        updatedArtist.lastname = lastname;
-        updatedArtist.genre = genre;
-        updatedArtist.born_date = born_date;
-        updatedArtist.born_city = born_city;
-        updatedArtist.died_date = died_date;
-        if (picture_url !== '') {
+        if (firstname && firstname !== '') {
+            updatedArtist.firstname = firstname;
+        }
+        if (lastname && lastname !== '') {
+            updatedArtist.lastname = lastname;
+        }
+        if (genre && genre !== '') {
+            updatedArtist.genre = genre;
+        }
+        if (born_date && born_date !== '') {
+            updatedArtist.born_date = born_date;
+        }
+        if (born_city && born_city !== '') {
+            updatedArtist.born_city = born_city;
+        }
+        if (died_date && died_date !== '') {
+            updatedArtist.died_date = died_date;
+        }
+        if (picture_url && picture_url !== '') {
             updatedArtist.picture_url = picture_url;
         }
+
         await updatedArtist.save();
         res.status(200).json(updatedArtist);
     } catch (error) {
-        res.status(500).json({ message: error });
+        console.error(error); 
+        throw new BadRequestError("Failed to update artist");
     }
 }
+
 
 //Remove an artist
 
@@ -87,12 +105,13 @@ export const deleteArtist = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const deletedArtist = await Artist.findByIdAndDelete(id);
+        
         if (!deletedArtist) {
-            return res.status(404).json({ message: 'Artist not found' });
+            throw new NotFoundError('Artist not found');
         }
         res.status(200).json({ message: 'Artist deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error });  
+        throw new BadRequestError("Failed to delete artist");  
     }
 }
 
@@ -102,10 +121,26 @@ export const getAllArtists = async (req: Request, res: Response) => {
     try {
         const artists = await Artist.find();
         if(!artists){
-            return res.status(404).json({ message: "No artist found!!"});
+            throw new NotFoundError("No artists found");
         }
         res.status(200).json(artists);
     } catch (error) {
-        res.status(500).json({ message: error });
+        throw new BadRequestError("Failed to fetch artists");
+    }
+}
+
+// get one artist 
+export const getArtist = async (req: Request, res: Response) => {
+    const {id} = req.params;
+
+    try {
+        const artist = await Artist.findById(id);
+        console.log(artist)
+        if(!artist){
+            throw new NotFoundError('artist not found');
+        }
+        res.status(200).json(artist);
+    } catch (error) {
+        throw new BadRequestError("Failed to get artist");
     }
 }
