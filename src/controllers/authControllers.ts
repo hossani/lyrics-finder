@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { check, validationResult } from "express-validator";
 import { hashPassword, comparePasswords } from "../helpers/password";
 import { generateToken, verifyToken } from "../helpers/jwt";
-import BadRequestError from "../errors/bad-request";
+import {BadRequestError,NotFoundError} from "../errors";
 import NotFound from "../errors/not-found";
 import { body } from "express-validator";
 import User from "../models/userModels";
@@ -55,6 +55,7 @@ const AuthController = {
         lastname,
         email,
         password: hashedPassword,
+    
       });
 
       await newUser.save();
@@ -83,7 +84,7 @@ const AuthController = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new NotFound("User not found");
+        throw new NotFoundError("User not found");
       }
 
       const isMatch = await comparePasswords(password, user.password);
@@ -100,7 +101,7 @@ const AuthController = {
       const token = generateToken(usertoken);
       console.log("token", token);
       res.setHeader("Authorization", `Bearer ${token}`);
-      res.send({ user, token });
+      res.send({token });
     } catch (error: any) {
       console.error(error.message);
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -164,22 +165,6 @@ const AuthController = {
   },
 };
 
-export const registerUserValidation = [
-  check('firstname').notEmpty().withMessage('Firstname is required'),
-  check('lastname').notEmpty().withMessage('Lastname is required'),
-  check('email').isEmail().withMessage('Please provide a valid email'),
-  check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-];
-
-export const loginUserValidation = [
-  check('email').isEmail().withMessage('Please provide a valid email'),
-  check('password').notEmpty().withMessage('Password is required')
-];
-
-export const updateUserValidation = [
-  check('oldPassword').notEmpty().withMessage('Old password is required'),
-  check('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long')
-];
 
 
 export default AuthController;

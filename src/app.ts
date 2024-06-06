@@ -27,7 +27,7 @@ app.get('/root',(req:Request,res:Response)=>{
 })
 app.use(routes);
 
-const port:number|any=process.env.APP_PORT || 7000
+const port:number|any=process.env.APP_PORT || 8000
 app.listen(port,()=>{
  console.log(`Server is running on PORT ${port}....`)
 })

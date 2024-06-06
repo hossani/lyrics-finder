@@ -80,7 +80,6 @@ export const deleteSong = async (req: Request, res: Response) => {
 
 
 /****************************************salma **************************************/
-// get song artist by id
     export const getAllSongsByArtist = async (req: Request, res: Response) => {
         const {id}  = req.params;
     
