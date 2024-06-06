@@ -26,9 +26,14 @@ interface AuthenticatedRequest extends Request {
 
 const AuthController = {
   registerUser: async (req: Request, res: Response): Promise<void> => {
+    await check('firstname').notEmpty().withMessage('Firstname is required').run(req);
+    await check('lastname').notEmpty().withMessage('Lastname is required').run(req);
+    await check('email').isEmail().withMessage('Please provide a valid email').run(req);
+    await check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long').run(req);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-       res.status(400).json({ errors: errors.array() });
+    res.status(400).json({ errors: errors.array()});
     }
     const { firstname, lastname, email, password } =
       req.body as RegisterUserBody;
@@ -66,6 +71,14 @@ const AuthController = {
 
   loginUser: async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body as LoginUserBody;
+    await check('email').isEmail().withMessage('Please provide a valid email').run(req);
+    await check('password').notEmpty().withMessage('Password is required').run(req);
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+       res.status(400).json({ errors: errors.array() });
+    }
+
     try {
       const user = await User.findOne({ email });
 
@@ -111,6 +124,14 @@ const AuthController = {
     req: AuthenticatedRequest,
     res: Response
   ): Promise<void> => {
+
+    await check('oldPassword').notEmpty().withMessage('Old password is required').run(req);
+    await check('newPassword').isLength({ min: 6 }).withMessage('New password must be at least 6 characters long').run(req);
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+       res.status(400).json({ errors: errors.array() });
+    }
     const { oldPassword, newPassword } = req.body;
     const user_Id = req.user?.id;
     console.log("user_Id", user_Id);

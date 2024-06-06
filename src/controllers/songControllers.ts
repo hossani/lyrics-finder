@@ -67,7 +67,7 @@ export const deleteSong = async (req: Request, res: Response) => {
     }}
 
 
-
+/****************************************salma **************************************/
     export const getAllSongsByArtist = async (req: Request, res: Response) => {
         const {id}  = req.params;
     
