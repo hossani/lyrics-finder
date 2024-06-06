@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import User from '../models/userModels';
-import {NotFoundError} from '../errors/index'
+import {BadRequestError, NotFoundError} from '../errors/index'
 
 interface AuthenticatedRequest extends Request {
   user: any; 
@@ -48,3 +48,29 @@ export {unsubscribeNewsletter,subscribeNewsletter}
 
 //change user's to udmin and viceversa 
 
+export const makeAdmin = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { isAdmin } = req.body;
+  try {
+    const userTomakeAdmin = await User.findById(id);
+    console.log(`User: ${userTomakeAdmin}\nisAdmin: ${isAdmin}`);
+
+    if(!userTomakeAdmin) {
+      throw new NotFoundError('User not found');
+    }
+
+    if (isAdmin && isAdmin !== ''){
+      userTomakeAdmin.isAdmin = isAdmin;
+    }
+
+    await userTomakeAdmin.save();
+    if (isAdmin){
+      res.status(200).json(`user turned to admin: ${userTomakeAdmin.firstname}`);
+    }else{
+      res.status(200).json(`user no longer an admin: ${userTomakeAdmin.firstname}`);
+    }
+  } catch (error) {
+    console.log(error)
+    throw new BadRequestError('operation failed ')
+  }
+}
