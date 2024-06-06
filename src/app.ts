@@ -19,6 +19,7 @@ cron.schedule('0 52 19 * * 3',sendNewsletter);
 app.use(express.json());
 console.log(connectDB());
 //Example de test 
+app.use(express.urlencoded({extended:true}))
 app.get('/root',(req:Request,res:Response)=>{
 
     console.log('Reponse de server!!!');

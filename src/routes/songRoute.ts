@@ -9,6 +9,6 @@ songRouter.put('/songs/:id', updateSong);
 songRouter.delete('/songs/:id', deleteSong);
 /*************************************************** */
 songRouter.get('/songs/:id', getAllSongsByArtist);
-songRouter.get('/songs/lyrics', getLyrics);
+songRouter.get('/lyrics', getLyrics);
 
 export default songRouter;

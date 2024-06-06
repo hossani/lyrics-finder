@@ -70,7 +70,6 @@ export const deleteSong = async (req: Request, res: Response) => {
 
     export const getAllSongsByArtist = async (req: Request, res: Response) => {
         const {id}  = req.params;
-        console.log(id);
     
         try {
             const artist = await Artist.findById(id).populate('songs');
@@ -87,8 +86,9 @@ export const deleteSong = async (req: Request, res: Response) => {
 };
 
 export const getLyrics = async (req: Request, res: Response) => {
-    const { title } = req.query;
-    console.log(title);
+    const {title}  =req.query;
+    console.log("req",req);
+
  
     try {
        const song = await Song.findOne({ title });
@@ -97,7 +97,7 @@ export const getLyrics = async (req: Request, res: Response) => {
         return res.status(404).json({ message: 'Song not found' });
       }
 
-      res.status(200).json({ lyrics: song.lyrics });  
+      res.status(200).json({ lyrics: song.lyrics }); 
      
     } catch (error) {
       console.error('Error fetching lyrics:', error);
