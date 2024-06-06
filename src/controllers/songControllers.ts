@@ -35,16 +35,27 @@ export const updateSong = async (req: Request, res: Response) => {
     const { id } = req.params;
     const {genre, title, recorded_date, lyrics} = req.body;
 
+    console.log(`${genre}\n${title}\n${recorded_date}\n${lyrics}`)
+
     try{
         const updatedSong = await Song.findById(id);
         if(!updatedSong) {
             throw new NotFoundError('Song not found');
         }
-        updatedSong.genre = genre;
-        updatedSong.title = title;
-        updatedSong.recorded_date = recorded_date;
-        updatedSong.lyrics = lyrics;
 
+        if(genre && genre !== ''){
+            updatedSong.genre = genre;
+        }
+        if(title && title !== ''){
+            updatedSong.title = title;
+        }
+        if(recorded_date && recorded_date !== ''){
+            updatedSong.recorded_date = recorded_date;
+        }
+        if(lyrics && lyrics !== ''){
+            updatedSong.lyrics = lyrics;
+        }
+        
         await updatedSong.save();
         res.status(200).json(updatedSong);
     }catch (error) {
@@ -81,3 +92,37 @@ export const getAllSongs = async (req: Request, res: Response) => {
         throw new BadRequestError("Failed to fetch songs");
     }
 }
+
+
+// Get all songs of an artist
+export const getSongsByArtist = async (req: Request, res: Response) => {
+    const { artistId } = req.params;
+    try {
+        const artist = await Artist.findById(artistId);
+        if (!artist) {
+            throw new NotFoundError('Artist not found');
+        }
+        const songs = await Song.find({ artist: artistId });
+        if (!songs || songs.length === 0) {
+            throw new NotFoundError("No songs found for this artist");
+        }
+        res.status(200).json(songs);
+    } catch (error) {
+        throw new BadRequestError("Failed to fetch songs for this artist");
+    }
+};
+
+
+// Get lyrics of a song
+export const getSongLyrics = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const song = await Song.findById(id);
+        if (!song) {
+            throw new NotFoundError('Song not found');
+        }
+        res.status(200).json({ lyrics: song.lyrics });
+    } catch (error) {
+        throw new BadRequestError("Failed to fetch song lyrics");
+    }
+};
