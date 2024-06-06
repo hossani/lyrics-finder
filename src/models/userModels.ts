@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
   otp:{type:String,require:false,default:null},
-  dateExpiration:{type:Date,required:false,default:null}
+  dateExpiration:{type:Date,required:false,default:null},
+  newsletter:{type:Boolean,default:false}
 
 });
 
