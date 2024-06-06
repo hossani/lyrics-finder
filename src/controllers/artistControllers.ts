@@ -128,20 +128,3 @@ export const getAllArtists = async (req: Request, res: Response) => {
         throw new BadRequestError("Failed to fetch artists");
     }
 }
-
-//get one artist
-
-export const getArtist = async (req: Request, res: Response) => {
-    const {id} = req.params;
-
-    try {
-        const artist = await Artist.findById(id);
-        console.log(artist)
-        if(!artist){
-            throw new NotFoundError('artist not found');
-        }
-        res.status(200).json(artist);
-    } catch (error) {
-        throw new BadRequestError("Failed to get artist");
-    }
-}

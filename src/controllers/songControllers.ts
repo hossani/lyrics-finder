@@ -75,54 +75,44 @@ export const deleteSong = async (req: Request, res: Response) => {
         await songToDelete.deleteOne({ _id: id});
         res.status(200).json({ message: `Song deleted: ${songToDelete}` });
     }catch (error){
-        throw new BadRequestError("Failed to delete song");
-    }
-}
+        res.status(500).json({ message: error })
+    }}
 
-//display all songs 
 
-export const getAllSongs = async (req: Request, res: Response) => {
-    try {
-        const songs = await Song.find();
-        if(!songs){
-            throw new NotFoundError("No songs found");
+
+    export const getAllSongsByArtist = async (req: Request, res: Response) => {
+        const {id}  = req.params;
+        console.log(id);
+    
+        try {
+            const artist = await Artist.findById(id).populate('songs');
+    
+            if (!artist) {
+                return res.status(404).json({ message: "Artist not found!" });
+            }
+    
+            res.status(200).json(artist.songs);
+            console.log(artist);
+        } catch (error) {
+            res.status(500).json({ message: error });
         }
-        res.status(200).json(songs);
-    } catch (error) {
-        throw new BadRequestError("Failed to fetch songs");
-    }
-}
-
-
-// Get all songs of an artist
-export const getSongsByArtist = async (req: Request, res: Response) => {
-    const { artistId } = req.params;
-    try {
-        const artist = await Artist.findById(artistId);
-        if (!artist) {
-            throw new NotFoundError('Artist not found');
-        }
-        const songs = await Song.find({ artist: artistId });
-        if (!songs || songs.length === 0) {
-            throw new NotFoundError("No songs found for this artist");
-        }
-        res.status(200).json(songs);
-    } catch (error) {
-        throw new BadRequestError("Failed to fetch songs for this artist");
-    }
 };
 
-
-// Get lyrics of a song
-export const getSongLyrics = async (req: Request, res: Response) => {
-    const { id } = req.params;
+export const getLyrics = async (req: Request, res: Response) => {
+    const { title } = req.query;
+    console.log(title);
+ 
     try {
-        const song = await Song.findById(id);
-        if (!song) {
-            throw new NotFoundError('Song not found');
-        }
-        res.status(200).json({ lyrics: song.lyrics });
+       const song = await Song.findOne({ title });
+  
+      if (!song) {
+        return res.status(404).json({ message: 'Song not found' });
+      }
+
+      res.status(200).json({ lyrics: song.lyrics });  
+     
     } catch (error) {
-        throw new BadRequestError("Failed to fetch song lyrics");
+      console.error('Error fetching lyrics:', error);
+      res.status(500).json({ message: 'Error fetching lyrics' });
     }
-};
+  };
