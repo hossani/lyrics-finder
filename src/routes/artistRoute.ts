@@ -7,6 +7,7 @@ const artistRouter = express.Router();
 artistRouter.post('/artists', uploadArtist.single('picture'), addArtist);
 artistRouter.put('/artists/:id', uploadArtist.single('picture'), updateArtist);
 artistRouter.delete('/artists/:id', deleteArtist);
+/****************************************************** */
 artistRouter.get('/artists', getAllArtists);
 
 export default artistRouter;

@@ -64,5 +64,43 @@ export const deleteSong = async (req: Request, res: Response) => {
         res.status(200).json({ message: `Song deleted: ${songToDelete}` });
     }catch (error){
         res.status(500).json({ message: error })
+    }}
+
+
+
+    export const getAllSongsByArtist = async (req: Request, res: Response) => {
+        const {id}  = req.params;
+        console.log(id);
+    
+        try {
+            const artist = await Artist.findById(id).populate('songs');
+    
+            if (!artist) {
+                return res.status(404).json({ message: "Artist not found!" });
+            }
+    
+            res.status(200).json(artist.songs);
+            console.log(artist);
+        } catch (error) {
+            res.status(500).json({ message: error });
+        }
+};
+
+export const getLyrics = async (req: Request, res: Response) => {
+    const { title } = req.query;
+    console.log(title);
+ 
+    try {
+       const song = await Song.findOne({ title });
+  
+      if (!song) {
+        return res.status(404).json({ message: 'Song not found' });
+      }
+
+      res.status(200).json({ lyrics: song.lyrics });  
+     
+    } catch (error) {
+      console.error('Error fetching lyrics:', error);
+      res.status(500).json({ message: 'Error fetching lyrics' });
     }
-}
+  };
