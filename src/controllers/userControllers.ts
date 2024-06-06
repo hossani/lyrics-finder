@@ -45,3 +45,6 @@ const unsubscribeNewsletter = async (req: AuthenticatedRequest, res: Response) =
 };
 
 export {unsubscribeNewsletter,subscribeNewsletter}
+
+//change user's to udmin and viceversa 
+
