@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express';
+import connectDB from "./config/database";
 import dotenv from 'dotenv';
 import routes from './routes';
 import connectDB from './models/db';
@@ -6,7 +7,8 @@ dotenv.config();
 const app:Application=express();
 
 app.use(express.json());
-
+console.log(connectDB());
+app.use("/", routes);
 //Example de test 
 app.get('/root',(req:Request,res:Response)=>{
 
