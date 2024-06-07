@@ -10,5 +10,5 @@
     "skipLibCheck": true  // Ignorer la vérification des types dans les fichiers de bibliothèque
   },
   "include": ["src/**/*"],  // Inclure tous les fichiers dans le répertoire src
-  "exclude": ["node_modules"]  // Exclure le répertoire node_modules
+  "exclude": ["node_modules"],  // Exclure le répertoire node_modules
 }
