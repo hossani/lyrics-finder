@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../helpers/jwt';
-import Unauthenticated from '../errors/unauthenticated';
 interface AuthenticatedRequest extends Request {
     user?: any; 
   }

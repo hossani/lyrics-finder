@@ -140,7 +140,7 @@ export const getArtist = async (req: Request, res: Response) => {
             throw new NotFoundError('artist not found');
         }
         res.status(200).json(artist);
-    } catch (error) {
-        throw new BadRequestError("Failed to get artist");
+    } catch (error:any) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
 }

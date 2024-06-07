@@ -102,7 +102,7 @@ const AuthController = {
       const token = generateToken(usertoken);
       console.log("token", token);
       res.setHeader("Authorization", `Bearer ${token}`);
-      res.json({ message: `${user.firstname}  ${user.lastname} . you are connected` });
+      res.send({ message: `${user.firstname}  ${user.lastname} . you are connected` ,token});
     } catch (error: any) {
       console.error(error.message);
       res.status(error.statusCode || 500).json({ message: error.message });
