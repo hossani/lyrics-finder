@@ -31,3 +31,4 @@ const port:number|any=process.env.APP_PORT || 8000
 app.listen(port,()=>{
  console.log(`Server is running on PORT ${port}....`)
 })
+export default app;

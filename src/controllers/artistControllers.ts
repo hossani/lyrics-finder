@@ -3,6 +3,7 @@ import Artist from '../models/artistModel';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv'
 import { BadRequestError, NotFoundError } from "../errors";
+import Song from "../models/songModel";
 dotenv.config()
 
 
@@ -42,6 +43,7 @@ export const addArtist = async (req: Request, res: Response) =>{
     
     } catch (error) {
         console.log(error)
+        res.status(500).json({ message: error })
         throw new BadRequestError("Failed to create artist");
     }
 }
@@ -94,6 +96,7 @@ export const updateArtist = async (req: Request, res: Response) => {
         res.status(200).json(updatedArtist);
     } catch (error) {
         console.error(error); 
+        res.status(500).json({ message: error })
         throw new BadRequestError("Failed to update artist");
     }
 }
@@ -107,10 +110,15 @@ export const deleteArtist = async (req: Request, res: Response) => {
         const deletedArtist = await Artist.findByIdAndDelete(id);
         
         if (!deletedArtist) {
+            res.status(404).json("artist not found");
             throw new NotFoundError('Artist not found');
         }
+
+        await Song.deleteMany({ artist: id });
+
         res.status(200).json({ message: 'Artist deleted successfully' });
     } catch (error) {
+        res.status(500).json({ message: error })
         throw new BadRequestError("Failed to delete artist");  
     }
 }
