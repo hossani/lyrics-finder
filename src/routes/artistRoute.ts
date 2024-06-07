@@ -11,5 +11,5 @@ artistRouter.put('/artists/:id',authenticateUser, isAdmin, uploadArtist.single('
 artistRouter.delete('/artists/:id',authenticateUser, isAdmin, deleteArtist);
 /****************************************************** */
 artistRouter.get('/artists', getAllArtists);
-artistRouter.get('/artists/:id',getArtist)
+artistRouter.get('/artist',getArtist)
 export default artistRouter;

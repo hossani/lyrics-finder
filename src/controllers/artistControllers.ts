@@ -124,7 +124,7 @@ export const deleteArtist = async (req: Request, res: Response) => {
 }
 
 //Display all artist
-/******************************start**************** */
+/******************************salma**************** */
 export const getAllArtists = async (req: Request, res: Response) => {
     try {
         const artists = await Artist.find().select('firstname lastname -_id');
@@ -136,14 +136,13 @@ export const getAllArtists = async (req: Request, res: Response) => {
         res.status(error.statusCode || 500).json({ message: error.message });
     }
 }
-/******************* end ***************************** */
-// get one artist 
+
+// get one artist by full name
 export const getArtist = async (req: Request, res: Response) => {
-    const {id} = req.params;
+    const {firstname, lastname} = req.query;
 
     try {
-        const artist = await Artist.findById(id);
-        console.log(artist)
+        const artist = await Artist.findOne({ firstname, lastname });
         if(!artist){
             throw new NotFoundError('artist not found');
         }

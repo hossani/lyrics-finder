@@ -10,7 +10,7 @@ songRouter.post('/artists/:id/songs',authenticateUser, isAdmin, addSong);
 songRouter.put('/songs/:id',authenticateUser, isAdmin, updateSong);
 songRouter.delete('/songs/:id',authenticateUser, isAdmin, deleteSong);
 /*************************************************** */
-songRouter.get('/songs/:id', getAllSongsByArtist);
+songRouter.get('/songs', getAllSongsByArtist);
 songRouter.get('/lyrics', getLyrics);
 
 
