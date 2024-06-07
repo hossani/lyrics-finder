@@ -10,7 +10,6 @@ function authenticateUser(req: AuthenticatedRequest, res: Response, next: NextFu
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token && verifyToken(token)) {
-      console.log("{{JWT}}", token);
       console.log("verifyToken true", verifyToken);
       req.user = verifyToken(token) ; 
       next()

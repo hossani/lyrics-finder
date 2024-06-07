@@ -116,19 +116,19 @@ export const deleteArtist = async (req: Request, res: Response) => {
 }
 
 //Display all artist
-
+/******************************start**************** */
 export const getAllArtists = async (req: Request, res: Response) => {
     try {
-        const artists = await Artist.find();
+        const artists = await Artist.find().select('firstname lastname -_id');
         if(!artists){
             throw new NotFoundError("No artists found");
         }
         res.status(200).json(artists);
-    } catch (error) {
-        throw new BadRequestError("Failed to fetch artists");
+    } catch (error:any) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
 }
-
+/******************* end ***************************** */
 // get one artist 
 export const getArtist = async (req: Request, res: Response) => {
     const {id} = req.params;
