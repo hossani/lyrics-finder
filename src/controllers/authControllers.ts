@@ -55,7 +55,7 @@ const AuthController = {
         lastname,
         email,
         password: hashedPassword,
-    
+       
       });
 
       await newUser.save();
