@@ -44,7 +44,6 @@ export const addArtist = async (req: Request, res: Response) =>{
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to create artist");
     }
 }
 
@@ -97,7 +96,6 @@ export const updateArtist = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error); 
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to update artist");
     }
 }
 
@@ -110,7 +108,6 @@ export const deleteArtist = async (req: Request, res: Response) => {
         const deletedArtist = await Artist.findByIdAndDelete(id);
         
         if (!deletedArtist) {
-            res.status(404).json("artist not found");
             throw new NotFoundError('Artist not found');
         }
 
@@ -119,38 +116,34 @@ export const deleteArtist = async (req: Request, res: Response) => {
         res.status(200).json({ message: 'Artist deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to delete artist");  
     }
 }
 
 //Display all artist
-
+/******************************salma**************** */
 export const getAllArtists = async (req: Request, res: Response) => {
     try {
-        const artists = await Artist.find();
+        const artists = await Artist.find().select('firstname lastname -_id');
         if(!artists){
             throw new NotFoundError("No artists found");
         }
         res.status(200).json(artists);
-    } catch (error) {
-        res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to fetch artists");
+    } catch (error:any) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
 }
 
-// get one artist 
+// get one artist by full name
 export const getArtist = async (req: Request, res: Response) => {
-    const {id} = req.params;
+    const {firstname, lastname} = req.query;
 
     try {
-        const artist = await Artist.findById(id);
-        console.log(artist)
+        const artist = await Artist.findOne({ firstname, lastname });
         if(!artist){
             throw new NotFoundError('artist not found');
         }
         res.status(200).json(artist);
-    } catch (error) {
-        res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to get artist");
+    } catch (error:any) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
 }

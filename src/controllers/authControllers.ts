@@ -55,7 +55,7 @@ const AuthController = {
         lastname,
         email,
         password: hashedPassword,
-    
+       
       });
 
       await newUser.save();
@@ -78,6 +78,7 @@ const AuthController = {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
        res.status(400).json({ errors: errors.array() });
+       return;
     }
 
     try {
@@ -101,7 +102,7 @@ const AuthController = {
       const token = generateToken(usertoken);
       console.log("token", token);
       res.setHeader("Authorization", `Bearer ${token}`);
-      res.send({token });
+      res.send({ message: `${user.firstname}  ${user.lastname} . you are connected` ,token});
     } catch (error: any) {
       console.error(error.message);
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -131,15 +132,12 @@ const AuthController = {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-       res.status(400).json({ errors: errors.array() });
+      res.status(400).json({ errors: errors.array() });
+      return;
     }
     const { oldPassword, newPassword } = req.body;
     const user_Id = req.user?.id;
     console.log("user_Id", user_Id);
-    if (!user_Id) {
-      res.status(400).send("User ID is missing from the request");
-      return;
-    }
     try {
       const user = await User.findOne({ _id: user_Id });
       if (!user) {
