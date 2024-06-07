@@ -10,7 +10,6 @@ export const addSong = async (req: Request, res: Response) => {
     try {
         const artist = await Artist.findById(artistId);
         if(!artist) {
-            res.status(404).json("artist not found")
             throw new NotFoundError('Artist not found');
         }
 
@@ -31,7 +30,6 @@ export const addSong = async (req: Request, res: Response) => {
         res.status(201).json({ message: "created succefully" })
     } catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to create song");
     }
 };
 
@@ -46,7 +44,6 @@ export const updateSong = async (req: Request, res: Response) => {
     try{
         const updatedSong = await Song.findById(id);
         if(!updatedSong) {
-            res.status(404).json("song not found");
             throw new NotFoundError('Song not found');
         }
 
@@ -67,7 +64,6 @@ export const updateSong = async (req: Request, res: Response) => {
         res.status(200).json(updatedSong);
     }catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to update song");
     }
 }
 
@@ -78,7 +74,6 @@ export const deleteSong = async (req: Request, res: Response) => {
     try {
         const songToDelete = await Song.findById(id);
         if(!songToDelete){
-            res.status(404).json("song not found");
             throw new NotFoundError('Song not found');
         }
         await songToDelete.deleteOne({ _id: id});
@@ -96,7 +91,7 @@ export const deleteSong = async (req: Request, res: Response) => {
             const artist = await Artist.findById(id).populate('songs');
     
             if (!artist) {
-                return res.status(404).json({ message: "Artist not found!" });
+                throw new NotFoundError('Artist not found');
             }
     
             res.status(200).json(artist.songs);
@@ -115,7 +110,7 @@ export const getLyrics = async (req: Request, res: Response) => {
        const song = await Song.findOne({ title });
   
       if (!song) {
-        return res.status(404).json({ message: 'Song not found' });
+        throw new NotFoundError('Song not found');
       }
 
       res.status(200).json({ lyrics: song.lyrics }); 

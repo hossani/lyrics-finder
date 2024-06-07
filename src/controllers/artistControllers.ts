@@ -44,7 +44,6 @@ export const addArtist = async (req: Request, res: Response) =>{
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to create artist");
     }
 }
 
@@ -97,7 +96,6 @@ export const updateArtist = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error); 
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to update artist");
     }
 }
 
@@ -110,7 +108,6 @@ export const deleteArtist = async (req: Request, res: Response) => {
         const deletedArtist = await Artist.findByIdAndDelete(id);
         
         if (!deletedArtist) {
-            res.status(404).json("artist not found");
             throw new NotFoundError('Artist not found');
         }
 
@@ -119,7 +116,6 @@ export const deleteArtist = async (req: Request, res: Response) => {
         res.status(200).json({ message: 'Artist deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to delete artist");  
     }
 }
 
@@ -134,7 +130,6 @@ export const getAllArtists = async (req: Request, res: Response) => {
         res.status(200).json(artists);
     } catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to fetch artists");
     }
 }
 
@@ -151,6 +146,5 @@ export const getArtist = async (req: Request, res: Response) => {
         res.status(200).json(artist);
     } catch (error) {
         res.status(500).json({ message: error })
-        throw new BadRequestError("Failed to get artist");
     }
 }
